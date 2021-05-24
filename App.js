@@ -58,7 +58,9 @@ export default class App extends React.Component {
           uid: user.uid,
           loggedInText: 'You are logged in.'
         });
+
       }
+
     );
 
   };
