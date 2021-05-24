@@ -5,7 +5,6 @@ import { db, auth } from './firebase';
 
 
 
-
 export default class App extends React.Component {
 
   constructor() {
@@ -42,6 +41,7 @@ export default class App extends React.Component {
       uid: this.state.uid
     });
   };
+
 
   componentDidMount() {
 
