@@ -1,9 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { db } from './firebase';
-import firebase from 'firebase/app';
-import 'firebase/firestore';
+import { db, auth } from './firebase';
+
 
 
 
@@ -39,7 +38,8 @@ export default class App extends React.Component {
   addList = () => {
     this.referenceShoppingLists.add({
       name: 'TestList',
-      items: ['egg', 'pasta', 'veggies']
+      items: ['egg', 'pasta', 'veggies'],
+      uid: this.state.uid
     });
   };
 
@@ -48,10 +48,10 @@ export default class App extends React.Component {
     this.referenceShoppingLists = db.collection('shoppinglists');
     this.unsubscribe = this.referenceShoppingLists.onSnapshot(this.onCollectionUpdate);
 
-    this.authUnsubscribe = firebase.auth().onAuthStateChanged(
+    this.authUnsubscribe = auth.onAuthStateChanged(
       async (user) => {
         if (!user) {
-          await firebase.auth().signInAnonymously();
+          await auth.signInAnonymously();
         }
 
         this.setState({
@@ -59,9 +59,17 @@ export default class App extends React.Component {
           loggedInText: 'You are logged in.'
         });
 
+        this.referenceShoppingListsUser = db.collection('shoppinglists').where(
+          'uid',
+          '==',
+          this.state.uid
+        );
+
       }
 
     );
+
+    this.unsubscribeListUser = this.referenceShoppingLists.onSnapshot(this.onCollectionUpdate);
 
   };
 
